@@ -1,5 +1,7 @@
 var express = require('express')
 var morgan = require('morgan')
+var errorhandler = require('errorhandler')
+var bodyParser = require('body-parser')
 var cookieSession = require('cookie-session')
 
 var passport = require('./passport')
@@ -10,6 +12,8 @@ app.enable('case sensitive routing')
 app.enable('strict routing')
 
 app.use(morgan('dev'))
+app.use(errorhandler())
+app.use(bodyParser.text())
 app.use(cookieSession({
   secret: 'hello react playground blah'
 }))

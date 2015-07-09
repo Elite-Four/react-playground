@@ -1,3 +1,5 @@
+var path = require('path')
+var fs = require('fs')
 var passport = require('passport')
 var GitHubStrategy = require('passport-github').Strategy
 
@@ -7,10 +9,15 @@ passport.use(new GitHubStrategy({
     callbackURL: "http://127.0.0.1:3000/login"
   },
   function(accessToken, refreshToken, profile, done) {
-    return done(null, {
-      id: profile.id,
-      name: profile.username
-    })
+    var id = profile.id
+    fs.mkdir(path.join(__dirname, '../codes', id.toString()),
+      function (err) {
+        if (err == null || err.code == 'EEXIST') {
+          return done(null, { id: id })
+        } else {
+          return done(err)
+        }
+      })
   }
 ))
 
