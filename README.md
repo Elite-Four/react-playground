@@ -1,2 +1,2 @@
-# reactplay
+# react-playground
 React Playground
