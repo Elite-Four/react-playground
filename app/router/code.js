@@ -19,7 +19,6 @@ var getUserId = function (github) {
     github.user.getFrom({
         user: user
       }, function (err, res) {
-        console.log(res)
         return callback(err, res.id)
       })
   }
