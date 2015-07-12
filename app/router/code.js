@@ -30,7 +30,9 @@ var getUserId = function (github) {
     }
   }))
 
-router.use(bodyParser.text())
+router.use(bodyParser.text({
+  type: config.type
+}))
 
 router.param('user',
   function (req, res, next, user) {
@@ -83,7 +85,7 @@ route.get(function (req, res) {
     try {
       var reader = fs.createReadStream(pathname)
       res.writeHead(200, {
-        'Content-Type': 'text/jsx',
+        'Content-Type': config.type,
         'Content-Length': stat.size
       })
       reader.pipe(res)
