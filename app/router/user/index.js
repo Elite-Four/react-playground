@@ -1,29 +1,16 @@
 var fs = require('fs')
 var path = require('path')
 
-var GitHub = require('github')
+var config = require('config')
 
-var router = require('./')
+var getUserId = require('./github').getUserId
 
-var config = require('./user.json')
+var router = require('../')
 
-var ROOT = path.join(__dirname, config.codeRoot)
+var ROOT = config.get('root')
 
-var getUserId = function (github) {
-  return function (user, callback) {
-    github.user.getFrom({
-        user: user
-      }, function (err, res) {
-        return callback(err, res ? res.id : null)
-      })
-  }
-} (new GitHub({
-    version: "3.0.0",
-    debug: process.env.NODE_ENV != 'production',
-    headers: {
-      "user-agent": "react-playground"
-    }
-  }))
+if (ROOT[0] == '.') // relative path
+  ROOT = path.join(path.dirname(require.main.filename), ROOT)
 
 router.param('user',
   function (req, res, next, user) {

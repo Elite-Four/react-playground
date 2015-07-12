@@ -5,14 +5,12 @@ var path = require('path')
 var bodyParser = require('body-parser')
 var mkdirp = require('mkdirp')
 
-var config = require('./code.json')
-
 var router = require('./')
 
 require('./auth')
 
 router.use(bodyParser.text({
-  type: config.type
+  type: 'jsx'
 }))
 
 router.param('code',
@@ -35,11 +33,7 @@ router.route('/@:user/:code.jsx')
     if (pathname == null)
       return next(new Error('No code name.'))
 
-    res.sendFile(pathname, {
-      headers: {
-        'Content-Type': config.type
-      }
-    }, function (err) {
+    res.type('jsx').sendFile(pathname, function (err) {
       return res.sendStatus(err.status).end()
     })
   })
