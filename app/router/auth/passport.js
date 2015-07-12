@@ -9,10 +9,9 @@ passport.use(new GitHubStrategy(config.get('github'),
   }
 ))
 
-passport.serializeUser(function(user, done) {
-  done(null, user)
-})
+function doneSelf(self, done) {
+  done(null, self)
+}
 
-passport.deserializeUser(function(user, done) {
-  done(null, user)
-})
+passport.serializeUser(doneSelf)
+passport.deserializeUser(doneSelf)
