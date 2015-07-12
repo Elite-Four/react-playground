@@ -1,4 +1,7 @@
 var GitHub = require('github')
+var config = require('config')
+
+var auth = config.get('github')
 
 var github = new GitHub({
   version: "3.0.0",
@@ -6,6 +9,12 @@ var github = new GitHub({
   headers: {
     "user-agent": "react-playground"
   }
+})
+
+github.authenticate({
+  type: "oauth",
+  key: auth.clientID,
+  secret: auth.clientSecret
 })
 
 exports.getUserId = function (user, callback) {
