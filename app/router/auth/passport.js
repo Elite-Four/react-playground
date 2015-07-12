@@ -3,7 +3,13 @@ var config = require('config')
 var passport = module.exports = require('passport')
 var GitHubStrategy = require('passport-github').Strategy
 
-passport.use(new GitHubStrategy(config.get('github'),
+var auth = config.get('github')
+
+passport.use(new GitHubStrategy({
+    "clientID": auth.id,
+    "clientSecret": auth.secret,
+    "callbackURL": auth.callback
+  },
   function(accessToken, refreshToken, profile, done) {
     return done(null, { id: profile.id })
   }
