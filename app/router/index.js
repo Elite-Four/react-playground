@@ -5,6 +5,8 @@ var router = module.exports = Router({
   strict: true
 })
 
+require('./static')
 require('./home')
 require('./auth')
+require('./user')
 require('./code')

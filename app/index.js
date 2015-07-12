@@ -4,11 +4,11 @@ var errorhandler = require('errorhandler')
 
 var app = module.exports = express()
 
-app.use(morgan('dev'))
-app.use(errorhandler())
+if (process.env.NODE_ENV != 'production') {
+  app.use(morgan('dev'))
+  app.use(errorhandler())
+} else {
+  app.use(morgan())
+}
 
 app.use(require('./router'))
-
-app.use('/static', express.static('static', {
-  index: false
-}))
