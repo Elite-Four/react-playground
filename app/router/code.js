@@ -18,10 +18,9 @@ router.param('code',
     var codeFilename = new Buffer(code).toString('hex')
 
     if (req.query.preview == '✓')
-      codeFilename += '.preview'
-
-    res.locals.pathname = path.join(res.locals.pathname, codeFilename)
-
+      res.locals.pathname = path.join(res.locals.pathname, 'preview', codeFilename)
+    else
+      res.locals.pathname = path.join(res.locals.pathname, 'component', codeFilename)
     return next()
   })
 
@@ -44,6 +43,9 @@ router.route('/@:user/:code.jsx')
 
     if (pathname == null)
       return next(new Error('No code name.'))
+
+    if (!req.is('jsx'))
+      return res.sendStatus(406).end()
 
     if (req.user == null || req.user.id != res.locals.id)
       return res.sendStatus(401).end()

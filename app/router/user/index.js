@@ -1,3 +1,4 @@
+var Buffer = require('buffer').Buffer
 var fs = require('fs')
 var path = require('path')
 
@@ -27,13 +28,14 @@ router.param('user',
 
 router.get('/@:user', function (req, res, next) {
   if (req.accepts('json')) {
-    fs.readDir(res.locals.pathname, function (err, files) {
+    var componentDir = path.join(res.locals.pathname, 'component')
+    fs.readdir(componentDir, function (err, files) {
       if (err)
         return next(err)
 
       res.json({
-        codes: files.filter(function (file) {
-          return file.indexOf('.') == -1
+        codes: files.map(function (file) {
+          return new Buffer(file, 'hex').toString()
         })
       })
     })
