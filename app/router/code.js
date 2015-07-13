@@ -34,7 +34,8 @@ router.route('/@:user/:code.jsx')
       return next(new Error('No code name.'))
 
     res.type('jsx').sendFile(pathname, function (err) {
-      return res.sendStatus(err.status).end()
+      if (err)
+        return res.sendStatus(err.status).end()
     })
   })
 

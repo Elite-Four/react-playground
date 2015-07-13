@@ -32,15 +32,16 @@ exports.getUserId = function (user, callback) {
     if (err)
       return callback(err)
 
-    if (res.statusCode == 304)
+    if (res.meta.status.substring(0, 3) == '304') {
       return callback(null, userCache.id)
+    }
 
-    var userCache = {
+    var newUserCache = {
       id: res.id,
       etag: res.meta.etag
     }
-    cache.set(user, userCache)
+    cache.set(user, newUserCache)
 
-    return callback(null, userCache.id)
+    return callback(null, newUserCache.id)
   })
 }

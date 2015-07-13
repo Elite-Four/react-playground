@@ -19,7 +19,7 @@ router.param('user',
         return next(err)
 
       res.locals.id = id
-      res.locals.pathname = path.join(ROOT, id)
+      res.locals.pathname = path.join(ROOT, id.toString())
 
       return next()
     })
