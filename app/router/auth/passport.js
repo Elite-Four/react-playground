@@ -11,7 +11,10 @@ passport.use('github', new GitHubStrategy({
     "callbackURL": auth.callback
   },
   function(accessToken, refreshToken, profile, done) {
-    return done(null, { id: profile.id })
+    return done(null, {
+      id: profile.id,
+      username: profile.username
+    })
   }
 ))
 

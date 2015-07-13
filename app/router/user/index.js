@@ -27,22 +27,25 @@ router.param('user',
   })
 
 router.get('/@:user', function (req, res, next) {
-  if (req.accepts('json')) {
-    var componentDir = path.join(res.locals.pathname, 'component')
-    fs.readdir(componentDir, function (err, files) {
-      if (err)
-        return next(err)
+  switch (req.accepts(['json', 'html'])) {
+    case 'json':
+      var componentDir = path.join(res.locals.pathname, 'component')
+      fs.readdir(componentDir, function (err, files) {
+        if (err)
+          return next(err)
 
-      res.json({
-        codes: files.map(function (file) {
-          return new Buffer(file, 'hex').toString()
+        res.json({
+          codes: files.map(function (file) {
+            return new Buffer(file, 'hex').toString()
+          })
         })
       })
-    })
-  } else if (req.accepts('html')) {
-    res.type('html')
-    res.end('Hello, id: ' + res.locals.id)
-  } else {
-    res.sendStatus(406).end()
+      break
+    case 'html':
+      res.type('html')
+      res.end('Hello, id: ' + res.locals.id)
+      break
+    default:
+      res.sendStatus(406).end()
   }
 })
