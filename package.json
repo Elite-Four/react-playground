@@ -4,7 +4,7 @@
   "description": "React Playground",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,11 @@
     "passport-github": "^0.1.5"
   },
   "devDependencies": {
-    "error-handler": "^1.0.0"
+    "error-handler": "^1.0.0",
+    "mocha": "^2.2.5",
+    "passport-dummy": "0.0.1",
+    "request": "^2.58.0",
+    "should": "^7.0.2",
+    "sinon": "^1.15.4"
   }
 }
