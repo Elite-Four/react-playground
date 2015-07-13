@@ -11,9 +11,6 @@ var router = require('../')
 
 var ROOT = config.get('code.root')
 
-if (ROOT[0] == '.') // relative path
-  ROOT = path.join(path.dirname(require.main.filename), ROOT)
-
 router.param('user',
   function (req, res, next, user) {
     getUserId(user, function (err, id) {
