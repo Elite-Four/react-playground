@@ -19,6 +19,6 @@ router.get('/auth/login',
 
 router.get('/auth/logout',
   function (req, res) {
-    req.session = null
+    req.logout()
     res.redirect('/')
   })

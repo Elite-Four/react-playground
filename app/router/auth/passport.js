@@ -5,7 +5,7 @@ var GitHubStrategy = require('passport-github').Strategy
 
 var auth = config.get('github')
 
-passport.use(new GitHubStrategy({
+passport.use('github', new GitHubStrategy({
     "clientID": auth.id,
     "clientSecret": auth.secret,
     "callbackURL": auth.callback
