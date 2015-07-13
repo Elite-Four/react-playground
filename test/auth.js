@@ -1,18 +1,8 @@
-var url = require('url')
-
 require('should')
 
 describe('Authorization', function () {
-  var request, port, server, dummyUser
-
-  before(function (done) {
-    request = require('./helpers/request')
-    port = request.port
-    dummyUser = require('./helpers/dummyUser')
-
-    var app = require('../app')
-    server = app.listen(port, done)
-  })
+  var request = require('./helpers/request')
+  var dummyUser = require('./helpers/dummyUser')
 
   it('should be able to login and redirect to user page', function (done) {
     request.get('/', function (err, response, body) {
@@ -20,9 +10,5 @@ describe('Authorization', function () {
       response.request.path.should.equal('/@' + dummyUser.username)
       done()
     })
-  })
-
-  after(function (done) {
-    server.close(done)
   })
 })
