@@ -6,7 +6,6 @@ var router = module.exports = Router({
 })
 
 require('./static')
-require('./home')
 require('./auth')
 require('./user')
 require('./code')

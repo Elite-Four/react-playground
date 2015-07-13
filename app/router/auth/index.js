@@ -11,18 +11,11 @@ router.use(cookieSession({
 router.use(passport.initialize())
 router.use(passport.session())
 
-router.get('/auth/login',
-  passport.authenticate('github'),
+router.get('/', passport.authenticate('github'),
   function (req, res) {
     if (req.user) {
       res.redirect('/@' + req.user.username)
     } else {
       res.redirect('/')
     }
-  })
-
-router.get('/auth/logout',
-  function (req, res) {
-    req.logout()
-    res.redirect('/')
   })
