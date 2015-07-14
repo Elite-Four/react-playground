@@ -4,6 +4,7 @@ var path = require('path')
 
 require('should')
 var mkdirp = require('mkdirp')
+var rimraf = require('rimraf')
 
 var root = require('config').get('code.root')
 
@@ -33,18 +34,6 @@ describe('User', function () {
   })
 
   after(function (done) {
-    fs.unlink(pathname, function (err) {
-      if (err) return done(err)
-
-      pathname = path.dirname(pathname)
-
-      fs.rmdir(pathname, function (err) {
-        if (err) return done(err)
-
-        pathname = path.dirname(pathname)
-
-        fs.rmdir(pathname, done)
-      })
-    })
+    rimraf(path.join(root, dummyUser.id.toString()), done)
   })
 })
