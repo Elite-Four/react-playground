@@ -9,7 +9,7 @@ var rimraf = require('rimraf')
 var root = require('config').get('code.root')
 
 describe('User', function () {
-  var codeName = '-*- dummyCode -*-'
+  var codename = '-*- dummyCode -*-'
   var request = require('./helpers/request')
   var dummyUser = require('./helpers/dummyUser')
   var pathname = path.join(root, dummyUser.id.toString(), 'component')
