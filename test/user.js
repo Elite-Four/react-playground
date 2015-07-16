@@ -1,4 +1,3 @@
-var Buffer = require('buffer').Buffer
 var fs = require('fs')
 var path = require('path')
 
@@ -6,25 +5,28 @@ require('should')
 var mkdirp = require('mkdirp')
 var rimraf = require('rimraf')
 
+var codeToFile = require('../app/router/code/converter').codeToFile
+
 var root = require('config').get('code.root')
 
 describe('User', function () {
   var codename = '-*- dummyCode -*-'
   var request = require('./helpers/request')
   var dummyUser = require('./helpers/dummyUser')
-  var pathname = path.join(root, dummyUser.id.toString(), 'component')
+  var pathname = path.join(root, dummyUser.id.toString(), 'component', codeToFile(codename))
 
   before(function (done) {
-    mkdirp(pathname, function (err) {
+    mkdirp(path.dirname(pathname), function (err) {
       if (err) return done(err)
 
-      pathname = path.join(pathname, new Buffer(codename).toString('hex'))
       fs.writeFile(pathname, '', done)
+    console.log(pathname)
     })
   })
 
   it('should be able to catch user info include code list', function (done) {
-    request.get('/@' + dummyUser.username, {
+    request.get({
+      url: '/@' + dummyUser.username,
       json: true
     }, function (err, response, body) {
       if (err) return done(err)
@@ -34,6 +36,6 @@ describe('User', function () {
   })
 
   after(function (done) {
-    rimraf(path.join(root, dummyUser.id.toString()), done)
+    rimraf(path.dirname(pathname), done)
   })
 })

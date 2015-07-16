@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Elite-Four/reactplay#readme",
   "dependencies": {
+    "async": "^1.3.0",
     "body-parser": "^1.13.2",
     "config": "^1.14.0",
     "cookie-session": "^1.2.0",

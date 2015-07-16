@@ -1,10 +1,10 @@
-var Buffer = require('buffer').Buffer
 var fs = require('fs')
 var path = require('path')
 
 var mkdirp = require('mkdirp')
 var config = require('config')
 
+var fileToCode = require('../code/converter').fileToCode
 var getUserId = require('./github').getUserId
 
 var router = require('../')
@@ -38,7 +38,7 @@ router.get('/@:user', function (req, res, next) {
 
           res.json({
             codes: files.map(function (file) {
-              return new Buffer(file, 'hex').toString()
+              return fileToCode(file)
             })
           })
         })

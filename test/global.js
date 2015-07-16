@@ -1,14 +1,21 @@
+var path = require('path')
+
+var rimraf = require('rimraf')
+
+var dummyUser = require('./helpers/dummyUser')
+var request = require('./helpers/request')
 var server
 
-before(function (done) {
-  // Mock
-  require('./helpers/dummyUser')
+var root = require('config').get('code.root')
 
+before(function (done) {
   var app = require('../app')
-  var request = require('./helpers/request')
   server = app.listen(request.port, done)
 })
 
 after(function (done) {
-  server.close(done)
+  rimraf(path.join(root, dummyUser.id.toString()), function (err) {
+    if (err) return done(err)
+    server.close(done)
+  })
 })
