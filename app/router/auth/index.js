@@ -14,7 +14,7 @@ router.use(passport.session())
 router.get('/', passport.authenticate('github'),
   function (req, res) {
     if (req.user) {
-      res.redirect('/@' + req.user.username)
+      res.redirect(req.user.toURL())
     } else {
       res.redirect('/')
     }
