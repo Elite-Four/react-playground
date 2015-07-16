@@ -11,10 +11,9 @@ describe('Authorization', function () {
       function (next) {
         request.get('/', next)
       },
-      function (response, body, next) {
-        response.request.path.should.equal('/@' + dummyUser.username)
-        next()
-      }
+      async.asyncify(function (response, body) {
+        response.request.path.should.equal(dummyUser.user.toURL())
+      })
     ], done)
   })
 })

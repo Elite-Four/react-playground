@@ -3,46 +3,39 @@ var path = require('path')
 
 require('should')
 var async = require('async')
-var mkdirp = require('mkdirp')
 var rimraf = require('rimraf')
 
-var codeToFile = require('../app/router/code/converter').codeToFile
-
-var root = require('config').get('code.root')
+var Code = require('../app/models/Code')
 
 describe('User', function () {
-  var codename = '-*- dummyCode -*-'
   var request = require('./helpers/request')
   var dummyUser = require('./helpers/dummyUser')
-  var pathname = path.join(root, dummyUser.id.toString(), 'component', codeToFile(codename))
+  var dummyCode = new Code('-*- dummyCode -*-', dummyUser.user)
 
   before(function (done) {
-    async.waterfall([
-      function (next) {
-        mkdirp(path.dirname(pathname), next)
-      },
-      function (made, next) {
-        fs.writeFile(pathname, '', next)
-      }
-    ], done)
+    dummyCode.setContent('', done)
   })
 
   it('should be able to catch user info include code list', function (done) {
     async.waterfall([
       function (next) {
         request.get({
-          url: '/@' + dummyUser.username,
+          url: dummyUser.user.toURL(),
           json: true
         }, next)
       },
-      function (response, body, next) {
-        body.should.eql({ codes: [ codename ] })
-        next()
-      }
+      async.asyncify(function (response, body) {
+        body.should.eql({ codes: [ dummyCode.toString() ] })
+      })
     ], done)
   })
 
   after(function (done) {
-    rimraf(path.dirname(pathname), done)
+    async.waterfall([
+      function (next) {
+        dummyUser.user.getRoot(next)
+      },
+      rimraf
+    ], done)
   })
 })

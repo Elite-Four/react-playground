@@ -1,7 +1,8 @@
 var DummyStrategy = require('passport-dummy').Strategy
 
 var passport = require('../../app/router/auth/passport')
-var github = require('../../app/router/user/github')
+var github = require('../../app/models/User/github')
+var User = require('../../app/models/User')
 
 var dummyId = 21
 var dummyUsername = 'Soul'
@@ -28,3 +29,4 @@ github.getUserId = function (user, callback) {
 
 exports.id = dummyId
 exports.username = dummyUsername
+exports.user = new User(dummyUsername)

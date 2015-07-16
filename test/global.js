@@ -1,5 +1,6 @@
 var path = require('path')
 
+var async = require('async')
 var rimraf = require('rimraf')
 
 var dummyUser = require('./helpers/dummyUser')
@@ -14,8 +15,13 @@ before(function (done) {
 })
 
 after(function (done) {
-  rimraf(path.join(root, dummyUser.id.toString()), function (err) {
-    if (err) return done(err)
-    server.close(done)
-  })
+  async.waterfall([
+    function (next) {
+      dummyUser.user.getRoot(next)
+    },
+    rimraf,
+    function (next) {
+      server.close(next)
+    }
+  ], done)
 })
