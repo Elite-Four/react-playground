@@ -13,13 +13,15 @@ passport.use('github', new GitHubStrategy({
     "callbackURL": auth.callback
   },
   function(accessToken, refreshToken, profile, done) {
-    return done(null, new User(profile.username))
+    done(null, new User(profile.username))
+    console.log('done')
   }
 ))
 
-function doneSelf(self, done) {
-  done(null, self)
-}
+passport.serializeUser(function (user, done) {
+  done(null, user.name)
+})
 
-passport.serializeUser(doneSelf)
-passport.deserializeUser(doneSelf)
+passport.deserializeUser(function (name, done) {
+  done(null, new User(name))
+})

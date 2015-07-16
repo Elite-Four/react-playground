@@ -2,21 +2,16 @@ var fs = require('fs')
 var path = require('path')
 
 var mkdirp = require('mkdirp')
-var config = require('config')
 
-var fileToCode = require('../code/converter').fileToCode
-var getUserId = require('./github').getUserId
+var router = require('./')
 
-var router = require('../')
-
-var User = require('../../models/User')
-var Code = require('../../models/Code')
-
-var ROOT = config.get('code.root')
+var User = require('../models/User')
+var Code = require('../models/Code')
 
 router.param('user',
   function (req, res, next, user) {
     res.locals.user = new User(user)
+    next()
   })
 
 router.get('/@:user', function (req, res, next) {
@@ -26,8 +21,10 @@ router.get('/@:user', function (req, res, next) {
         if (err) return next(err)
 
         res.json({
-          codes: codes.map(Code.prototype.toString)
-        })
+          codes: codes.map(function (code) {
+            return code.toString()
+          })
+        }).end()
       })
       break
     case 'html':

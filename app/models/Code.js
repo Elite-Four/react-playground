@@ -4,8 +4,9 @@ var path = require('path')
 var format = require('util').format
 
 var async = require('async')
+var mkdirp = require('mkdirp')
 
-module.exports = function Code(name, user, isPreview) {
+var Code = module.exports = function Code(name, user, isPreview) {
   var User = require('./User')
 
   if (!(this instanceof Code))
@@ -14,7 +15,7 @@ module.exports = function Code(name, user, isPreview) {
   Object.defineProperties(this, {
     name: { value: name.toString() },
     user: { value: (user instanceof User) ? user : new User(user) },
-    isPreview: !!isPreview
+    isPreview: { value: !!isPreview }
   })
 }
 
@@ -28,7 +29,7 @@ Code.prototype.getFilename = function (callback) {
   async.waterfall([
     code.user.getRoot.bind(code.user),
     async.asyncify(function (userRoot) {
-      return path.join(userPath,
+      return path.join(userRoot,
         code.isPreview ? 'preview' : 'component',
         new Buffer(code.name).toString('hex'))
     })
@@ -50,7 +51,14 @@ Code.prototype.setContent = function (content, callback) {
   async.waterfall([
     code.getFilename.bind(code),
     function (filename, next) {
-      fs.writeFile(filename, content, next)
+      async.waterfall([
+        function (next) {
+          mkdirp(path.dirname(filename), next)
+        },
+        function (made, next) {
+          fs.writeFile(filename, content, next)
+        }
+      ], next)
     }
   ], callback)
 }
@@ -59,13 +67,13 @@ Code.prototype.toURL = function () {
   return format('%s/%s.jsx%s',
     this.user.toURL(),
     encodeURIComponent(this),
-    this.isPreview ? encodeURIComponent('?preview=✓') : '')
+    this.isPreview ? '?preview=' + encodeURIComponent('✓') : '')
 }
 
 Code.prototype.is = function (that) {
   return this.name === that.name && this.user.is(that.user)
 }
 
-Code.prototype.toString = function() {
+Code.prototype.toString = function () {
   return this.name
 }

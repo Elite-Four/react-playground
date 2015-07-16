@@ -9,7 +9,7 @@ var getUserId = require('./github').getUserId
 
 var root = require('config').get('code.root')
 
-module.exports = function User(name) {
+var User = module.exports = function User(name) {
 
   if (!(this instanceof User))
     return new User(name)
@@ -22,7 +22,7 @@ module.exports = function User(name) {
 User.prototype.getRoot = function (callback) {
   var user = this
   async.waterfall([
-    getUserId.bind(user.name),
+    getUserId.bind(null, user.name),
     async.asyncify(function (id) {
       return path.join(root, id.toString())
     })
@@ -30,7 +30,7 @@ User.prototype.getRoot = function (callback) {
 }
 
 User.prototype.getCodes = function (callback) {
-  var Code = require('Code')
+  var Code = require('../Code')
 
   var user = this
   async.waterfall([
@@ -40,12 +40,16 @@ User.prototype.getCodes = function (callback) {
     }),
     function (path, next) {
       async.waterfall([
-        mkdirp.bind(this, path),
-        fs.readdir.bind(fs, path)
+        mkdirp.bind(null, path),
+        function (made, next) {
+          fs.readdir(path, next)
+        },
       ], next)
     },
     async.asyncify(function (files) {
-      return files.map(Code.fromFilename.bind(Code, user))
+      return files.map(function (filename) {
+        return Code.fromFilename(filename, user)
+      })
     })
   ], callback)
 }
@@ -55,9 +59,9 @@ User.prototype.toURL = function () {
 }
 
 User.prototype.is = function (that) {
-  return this.name === that.name && this.user.is(that.user)
+  return this.name === that.name
 }
 
-User.prototype.toString = function() {
+User.prototype.toString = function () {
   return this.name
 }

@@ -1,16 +1,15 @@
 var fs = require('fs')
 var path = require('path')
 
+var async = require('async')
 var bodyParser = require('body-parser')
 var mkdirp = require('mkdirp')
 
-var codeToFile = require('./converter').codeToFile
+var router = require('./')
 
-var router = require('../')
+var Code = require('../models/Code')
 
-var Code = require('.././models/Code')
-
-require('../auth')
+require('./auth')
 
 router.use(bodyParser.text({
   type: 'jsx'
@@ -29,7 +28,7 @@ router.route('/@:user/:code.jsx')
   .get(function (req, res, next) {
     var code = res.locals.code
     res.type('jsx')
-    async([
+    async.waterfall([
       code.getFilename.bind(code),
       res.sendFile.bind(res)
     ], next)
@@ -39,15 +38,15 @@ router.route('/@:user/:code.jsx')
     if (!req.is('jsx'))
       return res.sendStatus(406).end()
 
-    if (req.user == null || !req.user.is(req.locals.user))
+    if (req.user == null || !req.user.is(res.locals.user))
       return res.sendStatus(401).end()
 
     async.waterfall([
       function (next) {
-        req.locals.code.setContent(req.body, next)
+        res.locals.code.setContent(req.body, next)
       },
       function (next) {
-        req.sendStatus(201).end()
+        res.sendStatus(201).end()
       }
     ], next)
   })

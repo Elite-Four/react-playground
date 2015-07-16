@@ -1,24 +1,9 @@
-var DummyStrategy = require('passport-dummy').Strategy
-
-var passport = require('../../app/router/auth/passport')
-var github = require('../../app/models/User/github')
-var User = require('../../app/models/User')
-
 var dummyId = 21
 var dummyUsername = 'Soul'
 
-// Mock passport
-
-var dummyStrategy = new DummyStrategy(function (done) {
-  done(null, {
-    id: dummyId,
-    username: dummyUsername
-  })
-})
-
-passport.use('github', dummyStrategy)
-
 // Mock getUserId
+
+var github = require('../../app/models/User/github')
 
 github.getUserId = function (user, callback) {
   if (user == dummyUsername)
@@ -27,6 +12,20 @@ github.getUserId = function (user, callback) {
     return setImmediate(callback, new Error('Invalid user'))
 }
 
+// Mock passport
+
+var passport = require('../../app/router/auth/passport')
+var DummyStrategy = require('passport-dummy').Strategy
+
+var User = require('../../app/models/User')
+var dummyUser = new User(dummyUsername)
+
+var dummyStrategy = new DummyStrategy(function (done) {
+  done(null, dummyUser)
+})
+
+passport.use('github', dummyStrategy)
+
 exports.id = dummyId
 exports.username = dummyUsername
-exports.user = new User(dummyUsername)
+exports.user = dummyUser

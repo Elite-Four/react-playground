@@ -19,7 +19,7 @@ describe('Code', function () {
       function clean(done) {
         async.waterfall([
           function (next) {
-            dummyUser.getRoot(next)
+            dummyUser.user.getRoot(next)
           },
           rimraf
         ], done)
